@@ -1,0 +1,30 @@
+{
+  "name": "covid-19-rest-api",
+  "version": "1.0.0",
+  "description": "BuildForSDG Cohort-1 Challenge 5",
+  "main": "index.js",
+  "scripts": {
+    "start": "index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onifademola/covid-19-rest-api.git"
+  },
+  "keywords": [
+    "covid19"
+  ],
+  "author": "Ademola Onifade",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/onifademola/covid-19-rest-api/issues"
+  },
+  "homepage": "https://github.com/onifademola/covid-19-rest-api#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.3"
+  }
+}
