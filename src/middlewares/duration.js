@@ -3,7 +3,7 @@ const getCallDurationInMilliseconds = (start) => {
     const NS_TO_MS = 1e6;
     const diff = process.hrtime(start);
     const ans = (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS;
-    return (ans / 1000);
+    return ans;
 };
 
 module.exports = getCallDurationInMilliseconds;

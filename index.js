@@ -30,7 +30,7 @@ app.use((req, res, next) => {
     const timeStamp = Date.now();
     res.on('close', () => {
         const duration = getCallDurationInMilliseconds(startTime);
-        const log = `${timeStamp}\t\t${req.originalUrl}\t\tdone in ${duration.toLocaleString()} seconds`;
+        const log = `${timeStamp}\t\t${req.originalUrl}\t\tdone in ${duration.toLocaleString()} ms`;
         updateLog(log);
     });
     next();
