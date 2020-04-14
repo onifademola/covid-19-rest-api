@@ -3,6 +3,7 @@ const router = express.Router();
 const xml = require('xml2js');
 const xmlparser = require('express-xml-bodyparser');
 const fs = require('fs');
+var convert = require('xml-js');
 
 const validateInput = require('../models/validateInput');
 const covid19ImpactEstimator = require('../repositories/estimator');
@@ -11,7 +12,10 @@ router.get('/', async (req, res) => {
     res.status(200).send('Covid-19 is gone');
 });
 
-router.post('/xml', xmlparser({trim: false, explicitArray: false}), async (req, res) => {
+//router.post('/xml', xmlparser({trim: false, explicitArray: false}), async (req, res) => {
+router.post('/xml', async (req, res) => {
+    // const jsonBody = convert.xml2json(req.body);
+    // console.log(jsonBody);
     const { error } = validateInput(req.body);
     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
     try {
@@ -31,7 +35,7 @@ router.get('/logs', async (req, res) => {
     try {
         fs.readFile('./src/data/logs.json', (err, data) => {
             if (err) throw err;
-            res.setHeader('Content-Type', 'applictaion/text');
+            res.setHeader('Content-Type', 'text/plain');
             return res.status(200).send(data);
         });        
     }
