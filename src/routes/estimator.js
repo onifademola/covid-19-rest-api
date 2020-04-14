@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const xml = require('xml2js');
 const fs = require('fs');
+
+const validateInput = require('../models/validateInput');
 const covid19ImpactEstimator = require('../repositories/estimator');
 
 router.get('/', async (req, res) => {
@@ -9,16 +11,18 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/xml', async (req, res) => {
+    const { error } = validateInput(req.body);
+    if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
     try {
         const builder = new xml.Builder({
             renderOpts: { 'pretty': false }
         });
         res.setHeader('Content-Type', 'applictaion/xml');
-        res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
+        return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
     }
     catch (error) {
         res.setHeader('Content-Type', 'applictaion/xml');
-        res.status(500).send(`An error occured. Error details: ${error}`);
+        return res.status(500).send(`An error occured. Error details: ${error}`);
     }
 });
 
@@ -27,22 +31,24 @@ router.get('/logs', async (req, res) => {
         fs.readFile('./src/data/logs.json', (err, data) => {
             if (err) throw err;
             res.setHeader('Content-Type', 'applictaion/text');
-            res.status(200).send(data);
+            return res.status(200).send(data);
         });        
     }
     catch (error) {
-        res.status(500).send(`An error occured. Error details: ${error}`);
+        return res.status(500).send(`An error occured. Error details: ${error}`);
     }
 });
 
 router.post('/*', async (req, res) => {
+    const { error } = validateInput(req.body);
+    if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
     try {
         res.setHeader('Content-Type', 'applictaion/json');
-        res.status(200).send(covid19ImpactEstimator(req.body));
+        return res.status(200).send(covid19ImpactEstimator(req.body));
     }
     catch (error) {
         res.setHeader('Content-Type', 'applictaion/json');
-        res.status(500).send(`An error occured. Error details: ${error}`);
+        return res.status(500).send(`An error occured. Error details: ${error}`);
     }
 });
 
