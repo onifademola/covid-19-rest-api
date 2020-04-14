@@ -14,52 +14,69 @@ router.get('/', async (req, res) => {
 
 //router.post('/xml', xmlparser({trim: false, explicitArray: false}), async (req, res) => {
 router.post('/xml', async (req, res) => {
-    const acceptsXML = req.is('application/xml');
-    console.log(acceptsXML);
-    if (acceptsXML) {
-        const { error } = validateInput(req.body);
-        if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
-        try {
-            const builder = new xml.Builder({
-                renderOpts: { 'pretty': false }
-            });
-            res.setHeader('Content-Type', 'applictaion/xml');
-            return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
-        }
-        catch (error) {
-            res.setHeader('Content-Type', 'applictaion/xml');
-            return res.status(500).send(`An error occured. Error details: ${error}`);
-        }
-    } else {
-        return res.status(500).send(`An error occured. Error details: Request body not in xml format.`);
+    try {
+        const builder = new xml.Builder({
+            renderOpts: { 'pretty': false }
+        });
+        res.setHeader('Content-Type', 'applictaion/xml');
+        return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
     }
+    catch (error) {
+        res.setHeader('Content-Type', 'applictaion/xml');
+        return res.status(500).send(`An error occured. Error details: ${error}`);
+    }
+    // const acceptsXML = req.is('application/xml');
+    // console.log(acceptsXML);
+    // if (acceptsXML) {
+    //     const { error } = validateInput(req.body);
+    //     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
+    //     try {
+    //         const builder = new xml.Builder({
+    //             renderOpts: { 'pretty': false }
+    //         });
+    //         res.setHeader('Content-Type', 'applictaion/xml');
+    //         return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
+    //     }
+    //     catch (error) {
+    //         res.setHeader('Content-Type', 'applictaion/xml');
+    //         return res.status(500).send(`An error occured. Error details: ${error}`);
+    //     }
+    // } else {
+    //     return res.status(500).send(`An error occured. Error details: Request body not in xml format.`);
+    // }
 });
 
 router.get('/logs', async (req, res) => {
-    const acceptsTEXT = req.is('text/plain');
-    if (acceptsTEXT) {
-        try {
-            fs.readFile('./src/data/logs.json', (err, data) => {
-                if (err) throw err;
-                res.setHeader('Content-Type', 'text/plain');
-                return res.status(200).send(data);
-            });
-        }
-        catch (error) {
-            return res.status(500).send(`An error occured. Error details: ${error}`);
-        }
-    }else {
-        return res.status(500).send(`An error occured. Error details: Request body not in text format.`);
+    try {
+        fs.readFile('./src/data/logs.json', (err, data) => {
+            if (err) throw err;
+            res.setHeader('Content-Type', 'text/plain');
+            return res.status(200).send(data);
+        });
     }
+    catch (error) {
+        return res.status(500).send(`An error occured. Error details: ${error}`);
+    }
+    // const acceptsTEXT = req.is('text/plain');
+    // if (acceptsTEXT) {
+    //     try {
+    //         fs.readFile('./src/data/logs.json', (err, data) => {
+    //             if (err) throw err;
+    //             res.setHeader('Content-Type', 'text/plain');
+    //             return res.status(200).send(data);
+    //         });
+    //     }
+    //     catch (error) {
+    //         return res.status(500).send(`An error occured. Error details: ${error}`);
+    //     }
+    // }else {
+    //     return res.status(500).send(`An error occured. Error details: Request body not in text format.`);
+    // }
 });
 
 router.post('/*', async (req, res) => {
-    //var acceptsJSON = req.acceptsEncodings('application/json');
-    const acceptsJSON = req.is('application/json');//req.accepts('application/json');
-    console.log(acceptsJSON);
-    if (acceptsJSON) {
-        const { error } = validateInput(req.body);
-        if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
+    // const { error } = validateInput(req.body);
+    //     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
         try {
             res.setHeader('Content-Type', 'applictaion/json');
             return res.status(200).send(covid19ImpactEstimator(req.body));
@@ -68,9 +85,23 @@ router.post('/*', async (req, res) => {
             res.setHeader('Content-Type', 'applictaion/json');
             return res.status(500).send(`An error occured. Error details: ${error}`);
         }
-    } else {
-        return res.status(500).send(`An error occured. Error details: Request body not in json format.`);
-    }
+    //var acceptsJSON = req.acceptsEncodings('application/json');
+    //const acceptsJSON = req.is('application/json');//req.accepts('application/json');
+    // console.log(acceptsJSON);
+    // if (acceptsJSON) {
+    //     const { error } = validateInput(req.body);
+    //     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
+    //     try {
+    //         res.setHeader('Content-Type', 'applictaion/json');
+    //         return res.status(200).send(covid19ImpactEstimator(req.body));
+    //     }
+    //     catch (error) {
+    //         res.setHeader('Content-Type', 'applictaion/json');
+    //         return res.status(500).send(`An error occured. Error details: ${error}`);
+    //     }
+    // } else {
+    //     return res.status(500).send(`An error occured. Error details: Request body not in json format.`);
+    // }
 });
 
 module.exports = router;

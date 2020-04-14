@@ -20,15 +20,16 @@ app.use(cors({
 }));
 //app.use(bodyParser.json());
 //app.use(bodyParser.json());
-//app.use(express.request.accepts('xml'));
 app.use(xmlparser());
 app.use(express.json());
 app.use(express.text({ type: 'text/plain' }));
 app.use(express.json({ type: 'application/json' }));
-//app.use(express.json({ type: 'xml' })); 
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
+    // const acceptsJSON = req.is('application/json');
+    // const acceptsJSON = req.is('application/xml');
+    // const acceptsJSON = req.is('application/json');
     req.accepts(['xml', 'text', 'json']);
     const startTime = process.hrtime();
     const timeStamp = Date.now();
