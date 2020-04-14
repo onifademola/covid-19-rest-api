@@ -30,17 +30,12 @@ const covid19ImpactEstimator = (data) => {
     severeImpact.casesForICUByRequestedTime = getCasesForICUByRequestedTime(severeImpact.infectionsByRequestedTime);
     severeImpact.casesForVentilatorsByRequestedTime = getCasesForVentilatorsByRequestedTime(severeImpact.infectionsByRequestedTime);
     severeImpact.dollarsInFlight = getDollarsInFlight(severeImpact.infectionsByRequestedTime);
-
-    let resultObject = {
+    
+    return {
         data,
         impact,
         severeImpact
     };
-
-    return JSON.stringify(resultObject);
 }
-
-// const result = covid19ImpactEstimator(inputData);
-// console.log(result);
 
 module.exports = covid19ImpactEstimator;
