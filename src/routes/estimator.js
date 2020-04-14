@@ -52,7 +52,7 @@ router.get('/logs', async (req, res) => {
     try {
         fs.readFile('./src/data/logs.json', (err, data) => {
             if (err) throw err;
-            res.setHeader('Content-Type', 'text/json');
+            res.setHeader('Content-Type', 'text/html');
             return res.status(200).send(data);
         });
     }
