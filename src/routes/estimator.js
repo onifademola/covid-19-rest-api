@@ -18,27 +18,29 @@ router.post('/xml', async (req, res) => {
         const builder = new xml.Builder({
             renderOpts: { 'pretty': false }
         });
-        res.setHeader('Content-Type', 'applictaion/xml');
+        res.setHeader('Content-Type', 'application/xml');
         return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
     }
     catch (error) {
-        res.setHeader('Content-Type', 'applictaion/xml');
+        res.setHeader('Content-Type', 'application/xml');
         return res.status(500).send(`An error occured. Error details: ${error}`);
     }
     // const acceptsXML = req.is('application/xml');
     // console.log(acceptsXML);
     // if (acceptsXML) {
-    //     const { error } = validateInput(req.body);
-    //     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
+    //     //const { error } = validateInput(req.body);
+    //     //if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
     //     try {
+    //         // const jsonBody = convert.xml2json(req.body);
+    //         // console.log(jsonBody);
     //         const builder = new xml.Builder({
     //             renderOpts: { 'pretty': false }
     //         });
-    //         res.setHeader('Content-Type', 'applictaion/xml');
+    //         res.setHeader('Content-Type', 'application/xml');
     //         return res.status(200).send(builder.buildObject(covid19ImpactEstimator(req.body)));
     //     }
     //     catch (error) {
-    //         res.setHeader('Content-Type', 'applictaion/xml');
+    //         res.setHeader('Content-Type', 'application/xml');
     //         return res.status(500).send(`An error occured. Error details: ${error}`);
     //     }
     // } else {
@@ -78,11 +80,11 @@ router.post('/*', async (req, res) => {
     // const { error } = validateInput(req.body);
     //     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
         try {
-            res.setHeader('Content-Type', 'applictaion/json');
+            res.setHeader('Content-Type', 'application/json');
             return res.status(200).send(covid19ImpactEstimator(req.body));
         }
         catch (error) {
-            res.setHeader('Content-Type', 'applictaion/json');
+            res.setHeader('Content-Type', 'application/json');
             return res.status(500).send(`An error occured. Error details: ${error}`);
         }
     //var acceptsJSON = req.acceptsEncodings('application/json');
