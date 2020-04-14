@@ -1,6 +1,7 @@
 const cors = require('cors');
 const express = require('express');
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
+const xmlparser = require('express-xml-bodyparser');
 
 //requires
 const updateLog = require('./src/middlewares/logger');
@@ -17,18 +18,20 @@ console.log(`Server is listening on ${PORT}`);
 app.use(cors({
     origin: '*'
 }));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(express.text());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(xmlparser());
 app.use((req, res, next) => {
     const startTime = process.hrtime();
     const timeStamp = Date.now();
-
     res.on('close', () => {
         const duration = getCallDurationInMilliseconds(startTime);
         const log = `${timeStamp}\t\t${req.originalUrl}\t\tdone in ${duration.toLocaleString()} seconds`;
         updateLog(log);
-    })
-
+    });
     next();
 });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const xml = require('xml2js');
+const xmlparser = require('express-xml-bodyparser');
 const fs = require('fs');
 
 const validateInput = require('../models/validateInput');
@@ -10,7 +11,7 @@ router.get('/', async (req, res) => {
     res.status(200).send('Covid-19 is gone');
 });
 
-router.post('/xml', async (req, res) => {
+router.post('/xml', xmlparser({trim: false, explicitArray: false}), async (req, res) => {
     const { error } = validateInput(req.body);
     if (error) return res.status(400).send(`Input is invalid. Detail: ${error.details[0].message}`);
     try {
