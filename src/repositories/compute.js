@@ -1,58 +1,25 @@
-
-const getCurrentlyInfected = (value, factor) => {
-    if (typeof value !== 'number' || typeof factor !== 'number')
-        return 0;
-    return value * factor;
+const getFactor = (periodType, timeToElapse) => {
+    const factorRecieved = periodType.trim().toLowerCase();
+    console.log(`get factor called from repo with ${factorRecieved}`);
+    switch (factorRecieved) {
+        case 'days':
+            console.log(`days factor is ${Math.trunc((timeToElapse * 1) / 3)}`);
+            return (Math.trunc((timeToElapse * 1) / 3));
+        case 'weeks':
+            console.log(`weeks factor is ${Math.trunc((timeToElapse * 7) / 3)}`);
+            return Math.trunc((timeToElapse * 7) / 3);
+        case 'months':
+            console.log(`months factor is ${Math.trunc((timeToElapse * 30) / 3)}`);
+            return Math.trunc((timeToElapse * 30) / 3);
+        default:
+            console.log(`days factor is default with ${Math.trunc((timeToElapse * 1) / 3)}`);
+            return Math.trunc(timeToElapse);
+    }
 };
 
-const getInfectionsByRequestedTime = (value) => {
-    if (typeof value !== 'number')
-        return 0;
-    return value * (Math.pow(2, 10));
-};
-
-const getSevereCasesByRequestedTime = (value) => {
-    if (typeof value !== 'number')
-        return 0;
-    var result = (15 / 100) * value;
-    //console.log('severe cases before floor: ', result);
-    return Math.trunc(result);
-};
-
-const getHospitalBedsByRequestedTime = (totalHospitalBeds, severeCasesByRequestedTime) => {
-    if (typeof totalHospitalBeds !== 'number' || typeof severeCasesByRequestedTime !== 'number')
-        return 0;
-    const hospitalBedAlreadyInUse = (65 / 100) * totalHospitalBeds;
-    return Math.trunc(hospitalBedAlreadyInUse - severeCasesByRequestedTime);
-};
-
-const getCasesForICUByRequestedTime = (value) => {
-    if (typeof value !== 'number')
-        return 0;
-    const result = (5 / 100) * value;
-    return Math.trunc(result);
-};
-
-const getCasesForVentilatorsByRequestedTime = (value) => {
-    if (typeof value !== 'number')
-        return 0;
-    const result = (2 / 100) * value;
-    return Math.trunc(result);
-};
-
-const getDollarsInFlight = (value) => {
-    if (typeof value !== 'number')
-        return 0;
-    const result = (value * 0.65) * 1.5 * 30;
-    return Math.trunc(result);
-};
+const getCurrentlyInfected = (value, factor) => { return value * factor; };
 
 module.exports = {
-    getCasesForICUByRequestedTime,
-    getCasesForVentilatorsByRequestedTime,
-    getCurrentlyInfected,
-    getDollarsInFlight,
-    getHospitalBedsByRequestedTime,
-    getInfectionsByRequestedTime,
-    getSevereCasesByRequestedTime
+    getFactor,
+    getCurrentlyInfected
 };

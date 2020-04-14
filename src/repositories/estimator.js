@@ -1,35 +1,33 @@
-const { 
-    getCasesForICUByRequestedTime,
-    getCasesForVentilatorsByRequestedTime,
-    getCurrentlyInfected,
-    getDollarsInFlight,
-    getHospitalBedsByRequestedTime,
-    getInfectionsByRequestedTime,
-    getSevereCasesByRequestedTime
-} = require ('./compute');
+const { getFactor, getCurrentlyInfected } = require ('./compute');
+
+const normalCases = (reportedcases, calcfactor) => { return Math.trunc((reportedcases * 10) * (Math.pow(2, calcfactor))); };
+const severeCases = (reportedcases, calcfactor) => { return Math.trunc((reportedcases * 50) * (Math.pow(2, calcfactor))); };
+const hospitalBeds = (totalHospitalbeds) => { return (0.35 * totalHospitalbeds)};
 
 const covid19ImpactEstimator = (data) => {
 
     let impact = {};
     let severeImpact = {};
 
-    const impactCurrentlyInfected = getCurrentlyInfected(data.reportedCases, 10);
-    impact.currentlyInfected = impactCurrentlyInfected;
-    impact.infectionsByRequestedTime = getInfectionsByRequestedTime(impactCurrentlyInfected);
-    impact.severeCasesByRequestedTime = getSevereCasesByRequestedTime(impact.infectionsByRequestedTime);
-    impact.hospitalBedsByRequestedTime = getHospitalBedsByRequestedTime(data.totalHospitalBeds, impact.severeCasesByRequestedTime);
-    impact.casesForICUByRequestedTime = getCasesForICUByRequestedTime(impact.infectionsByRequestedTime);
-    impact.casesForVentilatorsByRequestedTime = getCasesForVentilatorsByRequestedTime(impact.infectionsByRequestedTime);
-    impact.dollarsInFlight = getDollarsInFlight(impact.infectionsByRequestedTime);
+    const factor = getFactor(data.periodType, data.timeToElapse);
+    console.log(`factor is ${factor}`);
 
-    const severeImpactCurrentlyInfected = getCurrentlyInfected(data.reportedCases, 50);
-    severeImpact.currentlyInfected = severeImpactCurrentlyInfected
-    severeImpact.infectionsByRequestedTime = getInfectionsByRequestedTime(severeImpactCurrentlyInfected);
-    severeImpact.severeCasesByRequestedTime = getSevereCasesByRequestedTime(severeImpact.infectionsByRequestedTime);
-    severeImpact.hospitalBedsByRequestedTime = getHospitalBedsByRequestedTime(data.totalHospitalBeds, severeImpact.severeCasesByRequestedTime);
-    severeImpact.casesForICUByRequestedTime = getCasesForICUByRequestedTime(severeImpact.infectionsByRequestedTime);
-    severeImpact.casesForVentilatorsByRequestedTime = getCasesForVentilatorsByRequestedTime(severeImpact.infectionsByRequestedTime);
-    severeImpact.dollarsInFlight = getDollarsInFlight(severeImpact.infectionsByRequestedTime);
+    impact.currentlyInfected = getCurrentlyInfected(data.reportedCases, 10);
+    impact.infectionsByRequestedTime = normalCases(data.reportedCases, factor);
+    impact.severeCasesByRequestedTime = Math.trunc(0.15 * normalCases(data.reportedCases, factor));
+    impact.hospitalBedsByRequestedTime = Math.trunc((hospitalBeds(data.totalHospitalBeds)) - (0.15 * normalCases(data.reportedCases, factor)));
+    impact.casesForICUByRequestedTime = Math.trunc(0.05 * normalCases(data.reportedCases, factor));
+    impact.casesForVentilatorsByRequestedTime = Math.trunc(0.02 * normalCases(data.reportedCases, factor));
+    impact.dollarsInFlight = Math.trunc((normalCases(data.reportedCases, factor)) * (data.region.avgDailyIncomeInUSD * data.region.avgDailyIncomePopulation) * (Math.pow(2, factor)));
+
+    severeImpact.currentlyInfected = getCurrentlyInfected(data.reportedCases, 50)
+    severeImpact.infectionsByRequestedTime = severeCases(data.reportedCases, factor);
+    severeImpact.severeCasesByRequestedTime = Math.trunc(0.15 * severeCases(data.reportedCases, factor));
+    severeImpact.hospitalBedsByRequestedTime = Math.trunc((hospitalBeds(data.totalHospitalBeds)) - (0.15 * severeCases(data.reportedCases, factor)));
+    severeImpact.casesForICUByRequestedTime = Math.trunc(0.05 * severeCases(data.reportedCases, factor));
+    severeImpact.casesForVentilatorsByRequestedTime = Math.trunc(0.02 * severeCases(data.reportedCases, factor));
+    severeImpact.dollarsInFlight = Math.trunc((severeCases(data.reportedCases, factor)) * (data.region.avgDailyIncomeInUSD * data.region.avgDailyIncomePopulation) * (Math.pow(2, factor)));
+
     
     return {
         data,
