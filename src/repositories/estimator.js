@@ -8,9 +8,7 @@ const covid19ImpactEstimator = (data) => {
 
     let impact = {};
     let severeImpact = {};
-
     const factor = getFactor(data.periodType, data.timeToElapse);
-    console.log(`factor is ${factor}`);
 
     impact.currentlyInfected = getCurrentlyInfected(data.reportedCases, 10);
     impact.infectionsByRequestedTime = normalCases(data.reportedCases, factor);
@@ -18,7 +16,7 @@ const covid19ImpactEstimator = (data) => {
     impact.hospitalBedsByRequestedTime = Math.trunc((hospitalBeds(data.totalHospitalBeds)) - (0.15 * normalCases(data.reportedCases, factor)));
     impact.casesForICUByRequestedTime = Math.trunc(0.05 * normalCases(data.reportedCases, factor));
     impact.casesForVentilatorsByRequestedTime = Math.trunc(0.02 * normalCases(data.reportedCases, factor));
-    impact.dollarsInFlight = Math.trunc((normalCases(data.reportedCases, factor)) * (data.region.avgDailyIncomeInUSD * data.region.avgDailyIncomePopulation) * (Math.pow(2, factor)));
+    impact.dollarsInFlight = Math.trunc(((normalCases(data.reportedCases, factor)) * (data.region.avgDailyIncomePopulation * data.region.avgDailyIncomeInUSD)) * data.timeToElapse);
 
     severeImpact.currentlyInfected = getCurrentlyInfected(data.reportedCases, 50)
     severeImpact.infectionsByRequestedTime = severeCases(data.reportedCases, factor);
@@ -26,7 +24,7 @@ const covid19ImpactEstimator = (data) => {
     severeImpact.hospitalBedsByRequestedTime = Math.trunc((hospitalBeds(data.totalHospitalBeds)) - (0.15 * severeCases(data.reportedCases, factor)));
     severeImpact.casesForICUByRequestedTime = Math.trunc(0.05 * severeCases(data.reportedCases, factor));
     severeImpact.casesForVentilatorsByRequestedTime = Math.trunc(0.02 * severeCases(data.reportedCases, factor));
-    severeImpact.dollarsInFlight = Math.trunc((severeCases(data.reportedCases, factor)) * (data.region.avgDailyIncomeInUSD * data.region.avgDailyIncomePopulation) * (Math.pow(2, factor)));
+    severeImpact.dollarsInFlight = Math.trunc(((severeCases(data.reportedCases, factor)) * (data.region.avgDailyIncomePopulation * data.region.avgDailyIncomeInUSD)) * data.timeToElapse);
 
     
     return {
